@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NEXAID
 
-## Getting Started
+NEXAID adalah MVP chatbot RAG untuk menjawab pertanyaan operasional bencana hanya dari dokumen SOP yang di-ingest ke Supabase pgvector, lengkap dengan kutipan sumber.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Next.js App Router + TypeScript
+- Supabase + pgvector
+- Vercel AI SDK + Google Gemini
+
+## Environment
+
+Isi `.env.local`:
+
+```env
+SUPABASE_URL=
+SUPABASE_SERVICE_ROLE_KEY=
+GOOGLE_GENERATIVE_AI_API_KEY=
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Opsional:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+GEMINI_MODEL=gemini-2.5-flash
+GEMINI_EMBEDDING_MODEL=gemini-embedding-001
+GEMINI_EMBEDDING_DIMENSIONS=768
+SOP_MATCH_COUNT=5
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Setup Supabase
 
-## Learn More
+Jalankan SQL di [supabase/schema.sql](supabase/schema.sql) lewat Supabase SQL Editor. Schema ini menambahkan kolom `source` dan `chunk_index` agar kutipan di UI bisa menampilkan asal dokumen.
 
-To learn more about Next.js, take a look at the following resources:
+## Jalankan Lokal
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm.cmd run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Buka `http://127.0.0.1:3000`.
 
-## Deploy on Vercel
+## Ingest SOP
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Gunakan panel `Ingest teks SOP` di halaman utama, atau POST langsung:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+curl -X POST http://127.0.0.1:3000/api/ingest \
+  -H "Content-Type: application/json" \
+  -d "{\"source\":\"SOP Pendistribusian Logpal\",\"teks\":\"...teks SOP resmi...\"}"
+```
+
+Catatan: PDF SOP di `base-knowledge` terdeteksi sebagai scan/gambar saat dicek dengan `pdftotext`, sehingga perlu OCR atau teks SOP hasil salin sebelum bisa di-ingest sebagai basis RAG.

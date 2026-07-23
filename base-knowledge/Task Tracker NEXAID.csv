@@ -1,0 +1,13 @@
+﻿Task,Estimasi,Prioritas,Status,Tahap
+"Siapkan akun (GitHub, Vercel, Supabase, API key Gemini)",5 mnt,Tinggi,Belum,0 — Persiapan
+"Scaffold Next.js (create-next-app, App Router + TS)",5 mnt,Tinggi,Belum,1 — Scaffold & Deploy
+Jalankan SQL: extension vector + tabel sop_chunks + fungsi match_sop,7 mnt,Tinggi,Belum,2 — Database
+Push ke GitHub + import ke Vercel (deploy kosong hijau),5 mnt,Tinggi,Belum,1 — Scaffold & Deploy
+Buat project Supabase,3 mnt,Tinggi,Belum,2 — Database
+Buat endpoint /api/ingest (chunk + embed + simpan),7 mnt,Tinggi,Belum,3 — Backend RAG
+"Install paket: ai, @ai-sdk/google, @supabase/supabase-js",2 mnt,Tinggi,Belum,3 — Backend RAG
+Buat endpoint /api/ask (embed → match_sop → jawab Gemini),6 mnt,Tinggi,Belum,3 — Backend RAG
+Buat UI app/page.tsx (input + jawaban + kutipan),10 mnt,Sedang,Belum,4 — Frontend
+Ingest 2–3 halaman teks SOP ke database,3 mnt,Sedang,Belum,5 — Isi Data & Uji
+Uji pertanyaan & verifikasi jawaban + kutipan,2 mnt,Sedang,Belum,5 — Isi Data & Uji
+Set env di Vercel + deploy final + tes production,5 mnt,Tinggi,Belum,6 — Deploy Final

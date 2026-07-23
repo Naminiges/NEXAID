@@ -15,7 +15,7 @@ const baseKnowledgeDir = path.join(root, "base-knowledge");
 const extractedDir = path.join(baseKnowledgeDir, "extracted");
 const embeddingDimensions = Number(process.env.GEMINI_EMBEDDING_DIMENSIONS ?? "768");
 const embeddingModel = process.env.GEMINI_EMBEDDING_MODEL ?? "gemini-embedding-001";
-const ocrModel = process.env.GEMINI_MODEL ?? "gemini-2.0-flash";
+const ocrModel = process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite";
 
 function requireEnv(name) {
   const value = process.env[name];

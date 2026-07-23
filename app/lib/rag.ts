@@ -25,7 +25,7 @@ export function getEmbeddingModel() {
 }
 
 export function getGenerationModel() {
-  return google(process.env.GEMINI_MODEL ?? "gemini-2.0-flash");
+  return google(process.env.GEMINI_MODEL ?? "gemini-3.5-flash-lite");
 }
 
 export function normalizeText(value: string) {

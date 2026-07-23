@@ -2,6 +2,7 @@ import { embed, generateText } from "ai";
 import { getSupabaseAdmin } from "@/app/lib/supabase";
 import {
   EMBEDDING_DIMENSIONS,
+  createExtractiveAnswer,
   getEmbeddingModel,
   getGenerationModel,
   MATCH_COUNT,
@@ -64,22 +65,34 @@ export async function POST(req: Request) {
       )
       .join("\n\n---\n\n");
 
-    const { text } = await generateText({
-      model: getGenerationModel(),
-      system: [
-        "Anda adalah NEXAID, asisten SOP bencana untuk relawan dan koordinator posko.",
-        "Jawab hanya berdasarkan KONTEKS SOP yang diberikan.",
-        "Jika konteks tidak memuat jawaban yang jelas, jawab persis: Tidak ditemukan di SOP.",
-        "Jangan gunakan pengetahuan umum, asumsi, atau prosedur di luar konteks.",
-        "Jawaban harus ringkas, operasional, berbahasa Indonesia, dan menyebut nomor sumber seperti [1].",
-      ].join(" "),
-      prompt: `KONTEKS SOP:\n${context}\n\nPERTANYAAN:\n${cleanQuestion}`,
-    });
+    try {
+      const { text } = await generateText({
+        model: getGenerationModel(),
+        system: [
+          "Anda adalah NEXAID, asisten SOP bencana untuk relawan dan koordinator posko.",
+          "Jawab hanya berdasarkan KONTEKS SOP yang diberikan.",
+          "Jika konteks tidak memuat jawaban yang jelas, jawab persis: Tidak ditemukan di SOP.",
+          "Jangan gunakan pengetahuan umum, asumsi, atau prosedur di luar konteks.",
+          "Jawaban harus ringkas, operasional, berbahasa Indonesia, dan menyebut nomor sumber seperti [1].",
+        ].join(" "),
+        prompt: `KONTEKS SOP:\n${context}\n\nPERTANYAAN:\n${cleanQuestion}`,
+      });
 
-    return Response.json({
-      answer: text.trim(),
-      sources: matches,
-    });
+      return Response.json({
+        answer: text.trim(),
+        sources: matches,
+      });
+    } catch (generationError) {
+      return Response.json({
+        answer: createExtractiveAnswer(matches, cleanQuestion),
+        sources: matches,
+        mode: "extractive-fallback",
+        warning:
+          generationError instanceof Error
+            ? generationError.message
+            : "Gemini generation failed.",
+      });
+    }
   } catch (error) {
     return Response.json(
       {

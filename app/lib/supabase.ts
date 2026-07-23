@@ -10,6 +10,12 @@ export function getSupabaseAdmin() {
     );
   }
 
+  if (serviceRoleKey.startsWith("sb_publishable")) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY masih berisi publishable/anon key. Ganti dengan service_role atau secret key server Supabase agar bisa insert saat ingest.",
+    );
+  }
+
   return createClient(url, serviceRoleKey, {
     auth: {
       autoRefreshToken: false,
